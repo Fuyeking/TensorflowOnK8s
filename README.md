@@ -1,2 +1,2 @@
 # TensorflowOnK8s
-基于Kubernetes构建tensorflow的分布式训练黄精
+基于Kubernetes构建tensorflow的分布式训练环境
