@@ -19,7 +19,7 @@ class TrainHandler(tornado.web.RequestHandler):
     def parse(self, data):
         return json.loads(data)
 
-    def genV1Service(self, uid, workType, seq, count):
+    def genV1ServiceParam(self, uid, workType, seq, count):
         tfId = "-".join(["tf", uid, workType, str(seq), str(count)])
         body = kubernetes.client.V1Service()
         body.api_version = "v1"
@@ -44,7 +44,7 @@ class TrainHandler(tornado.web.RequestHandler):
         for workType in runInfo:
             workCount = runInfo.get(workType, 1)
             for i in range(workCount):
-                body = self.genV1Service(uid, workType, i, workCount)
+                body = self.genV1ServiceParam(uid, workType, i, workCount)
                 print (body)
                 logging.info("create service body: " + str(body))
                 try:
@@ -79,14 +79,17 @@ class TrainHandler(tornado.web.RequestHandler):
         containerBody.image = ApiConfig().get("image", "tensorflow")
         hdfsUrl = ApiConfig().get("hdfs", "web")
         hdfsNN = ApiConfig().get("hdfs", "namenode")
-        containerBody.command = ["/notebooks/entry.sh", workType, str(seq), ps, workers, info.get("file", ""),
-                                 info.get("data", "/notebooks"), info.get("export", "/tmp"), hdfsUrl, hdfsNN]
+        #containerBody.command = ["/notebooks/entry.sh", workType, str(seq), ps, workers, info.get("file", ""),
+         #                     info.get("data", "/notebooks"), info.get("export", "/tmp"), hdfsUrl, hdfsNN]、
+        containerBody.command = ["python",info.get("file", "")]
+      #  containerBody.command = ["sleep","3600"]
+        #containerBody.args=[info.get("file", ""),"--job_name = "+workType,"--task_index="+str(seq),"--ps_host="+ps, "--worker_hosts="+workers]
         portBody = kubernetes.client.V1ContainerPort(ApiConfig().getint("k8s", "headless_port"))
         containerBody.ports = [portBody]
         tempSpec.spec = tempInnerSpec
         specBody = kubernetes.client.V1JobSpec(template=tempSpec)
         body.spec = specBody
-        return  v
+        return  body
         
 
     def createJob(self, uid, info):

@@ -2,7 +2,7 @@
 class EventHandler(object):
 
     def __call__(self, eType, objName, eStatus):
-        print '@@@@@@@@@@@ eventHandler type: ' + eType + ', name: ' + objName
+        print ('@@@@@@@@@@@ eventHandler type: ' + eType + ', name: ' + objName)
         if eType == "ADDED":
             self.addEvent(objName, eStatus)
         elif eType == "MODIFIED":
@@ -13,14 +13,14 @@ class EventHandler(object):
             self.errorEvent(objName, eStatus)
 
     def addEvent(self, objName, eStatus):
-        print 'do nothing'
+        print ('do nothing')
 
     def delEvent(self, objName, eStatus):
-        print 'do nothing'
+        print ('do nothing')
 
     def modifEvent(self, objName, eStatus):
-        print 'do nothing'
+        print ('do nothing')
 
     def errorEvent(self, objName, eStatus):
-        print 'do nothing'
+        print ('do nothing')
 
